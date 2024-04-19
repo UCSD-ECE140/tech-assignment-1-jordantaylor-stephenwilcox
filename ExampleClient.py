@@ -113,7 +113,7 @@ client.publish("encyclopedia/temperature", payload="cold2", qos=1)
 
 # loop_forever for simplicity, here you need to stop the loop manually
 # you can also use loop_start and loop_stop
-#client.loop_forever()
+client.loop_forever()
 
 
 #client.loop_start()

@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 import time
 import random
 
@@ -79,6 +80,25 @@ def on_message(client, userdata, msg):
 
 
 
+# using MQTT version 5 here, for 3.1.1: MQTTv311, 3.1: MQTTv31
+# userdata is user defined data of any type, updated by user_data_set()
+# client_id is the given name of the client
+client1 = paho.Client(callback_api_version=paho.CallbackAPIVersion.VERSION1, client_id="swilcox420", userdata=None, protocol=paho.MQTTv5)
+client1.on_connect = on_connect
+client1.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+client1.connect("broker.hivemq.com", 8883)
+client1.on_subscribe = on_subscribe
+client1.on_message = on_message
+client1.on_publish = on_publish
+
+client2 = paho.Client(callback_api_version=paho.CallbackAPIVersion.VERSION1, client_id="swilcox421", userdata=None, protocol=paho.MQTTv5)
+client2.on_connect = on_connect
+client2.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+client2.connect("broker.hivemq.com", 8883)
+client2.on_subscribe = on_subscribe
+client2.on_message = on_message
+client2.on_publish = on_publish
+
 client3 = paho.Client(callback_api_version=paho.CallbackAPIVersion.VERSION1, client_id="swilcox422", userdata=None, protocol=paho.MQTTv5)
 client3.on_connect = on_connect
 client3.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
@@ -87,4 +107,47 @@ client3.on_subscribe = on_subscribe
 client3.on_message = on_message
 client3.on_publish = on_publish
 
+
+#time.sleep(3)
+#client1.publish("encyclopedia/temperature", payload="hot1", qos=1)
+#client2.publish("encyclopedia/temperature", payload="hot2", qos=1)
+
+#client1.loop_start()
+#client2.loop_start()
+#time.sleep(3)
+#client2.loop_stop()
+#client1.loop_stop()
+
+#client1.loop_forever()
+#client2.loop_forever()
+#client3.loop_forever()
+
+#client1.loop_start()
+#client2.loop_start()
+#while(True):
+#    client1.publish("encyclopedia/temperature", payload=random.randint(1, 100), qos=1)
+#    client2.publish("encyclopedia/temperature", payload=random.randint(1, 100), qos=1)
+#    time.sleep(3)
+#    print(random.randint(1, 100))
+
+
+#client2.loop_stop()
+#client1.loop_stop()
+
+
+#client1.publish("encyclopedia/temperature", payload=random.randint(1, 100), qos=1)
+#client2.publish("encyclopedia/temperature", payload=random.randint(1, 100), qos=1)
+client1.loop_start()
+client2.loop_start()
+client3.loop_start()
+
+
 client3.subscribe("encyclopedia/#", qos=1)
+
+
+while True:
+    msg_info1 = client1.publish("encyclopedia/temperature", payload=random.randint(1, 100), qos=1)
+    msg_info2 = client2.publish("encyclopedia/temperature", payload=random.randint(1, 100), qos=1)
+    msg_info1.wait_for_publish()
+    msg_info2.wait_for_publish()
+    time.sleep(3)
